@@ -10,6 +10,7 @@ import io.github.yanestyl.jgram.handler.HandlerMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 public class UpdateDispatcher {
@@ -46,7 +47,7 @@ public class UpdateDispatcher {
             String command = text.split(" ")[0]; // "/start args" -> "/start"
             HandlerMethod handler = registry.findCommandHandler(command);
             if (handler != null) {
-                invokeAndReply(handler, chatId);
+                invokeAndReply(handler, chatId, text);
                 return;
             }
         }
@@ -55,7 +56,7 @@ public class UpdateDispatcher {
         for (HandlerMethod handler : handlers) {
             OnMessage annotation = handler.getMethod().getAnnotation(OnMessage.class);
             if (matches(annotation, text)) {
-                invokeAndReply(handler, chatId);
+                invokeAndReply(handler, chatId, text);
                 return;
             }
         }
@@ -66,14 +67,24 @@ public class UpdateDispatcher {
         long chatId = callback.maybeInaccessibleMessage().chat().id();
         HandlerMethod handler = registry.findCallbackHandler(data);
         if (handler != null) {
-            invokeAndReply(handler, chatId);
+            invokeAndReply(handler, chatId, data);
         }
     }
 
-    private void invokeAndReply(HandlerMethod handler, long chatId) throws Exception {
-        Object result = handler.invoke();
-        if (result instanceof String text) {
-            bot.execute(new SendMessage(chatId, text));
+    private void invokeAndReply(HandlerMethod handler, long chatId, String text) throws Exception {
+        Method method = handler.getMethod();
+        Object result;
+
+        if (method.getParameterCount() == 0) {
+            result = handler.invoke();
+        } else if (method.getParameterTypes()[0] == String.class) {
+            result = handler.invoke(text);
+        } else {
+            result = handler.invoke();
+        }
+
+        if (result instanceof String reply) {
+            bot.execute(new SendMessage(chatId, reply));
         }
     }
 
