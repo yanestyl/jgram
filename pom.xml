@@ -20,6 +20,7 @@
         <module>examples/echo-bot</module>
         <module>examples/context-bot</module>
         <module>examples/filter-bot</module>
+        <module>examples/keyboard-bot</module>
     </modules>
 
     <properties>
