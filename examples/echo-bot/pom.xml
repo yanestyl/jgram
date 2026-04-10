@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.yanestyl</groupId>
         <artifactId>jgram-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.2.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>echo-bot</artifactId>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>io.github.yanestyl</groupId>
             <artifactId>jgram-starter</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -33,7 +33,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.6.3</version>
                 <configuration>
-                    <mainClass>io.github.yanestyl.example.EchoBotApp</mainClass>
+                    <mainClass>io.github.yanestyl.example.echo.EchoBotApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>
