@@ -1,0 +1,45 @@
+package io.github.yanestyl.jgram.response;
+
+/**
+ * Represents a single keyboard button.
+ */
+public class Button {
+
+    public enum Type { CALLBACK, URL, REPLY }
+
+    private final String text;
+    private final String data; // callback data or url
+    private final Type type;
+
+    private Button(String text, String data, Type type) {
+        this.text = text;
+        this.data = data;
+        this.type = type;
+    }
+
+    // Inline кнопки
+    public static Button callback(String text, String callbackData) {
+        return new Button(text, callbackData, Type.CALLBACK);
+    }
+
+    public static Button url(String text, String url) {
+        return new Button(text, url, Type.URL);
+    }
+
+    // Reply кнопка
+    public static Button reply(String text) {
+        return new Button(text, null, Type.REPLY);
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public Type getType() {
+        return type;
+    }
+}

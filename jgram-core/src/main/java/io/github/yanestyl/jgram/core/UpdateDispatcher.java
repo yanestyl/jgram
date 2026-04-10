@@ -13,6 +13,8 @@ import io.github.yanestyl.jgram.context.impl.DefaultMessageContext;
 import io.github.yanestyl.jgram.context.impl.DefaultPhotoContext;
 import io.github.yanestyl.jgram.handler.FilterResult;
 import io.github.yanestyl.jgram.handler.HandlerMethod;
+import io.github.yanestyl.jgram.response.BotResponse;
+import io.github.yanestyl.jgram.response.BotResponseSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,6 +158,8 @@ public class UpdateDispatcher {
         // если метод вернул строку - отправляем как ответ
         if (response instanceof String reply) {
             bot.execute(new SendMessage(chatId, reply));
+        } else if (response instanceof BotResponse botResponse) {
+            new BotResponseSender(bot).send(chatId, botResponse);
         }
     }
 
