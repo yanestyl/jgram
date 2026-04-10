@@ -11,6 +11,7 @@ import io.github.yanestyl.jgram.context.impl.DefaultCallbackContext;
 import io.github.yanestyl.jgram.context.impl.DefaultLocationContext;
 import io.github.yanestyl.jgram.context.impl.DefaultMessageContext;
 import io.github.yanestyl.jgram.context.impl.DefaultPhotoContext;
+import io.github.yanestyl.jgram.handler.FilterResult;
 import io.github.yanestyl.jgram.handler.HandlerMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +34,9 @@ public class UpdateDispatcher {
     public void dispatch(Update update) {
         try {
             if (update.message() != null) {
-                handleMessage(update.message());
+                handleMessage(update.message(), update);
             } else if (update.callbackQuery() != null) {
-                handleCallback(update.callbackQuery());
+                handleCallback(update.callbackQuery(), update);
             }
         } catch (Exception e) {
             log.error("Error dispatching update", e);
@@ -46,13 +47,13 @@ public class UpdateDispatcher {
     // Message routing
     // -----------------------------------------------------------
 
-    private void handleMessage(Message message) throws Exception {
+    private void handleMessage(Message message, Update update) throws Exception {
         // фото
         if (message.photo() != null) {
             HandlerMethod handler = registry.findPhotoHandler();
             if (handler != null) {
                 PhotoContext ctx = new DefaultPhotoContext(message, bot);
-                invokeAndReply(handler, ctx, null, message.chat().id());
+                invokeAndReply(handler, ctx, null, message.chat().id(), update);
             }
             return;
         }
@@ -62,7 +63,7 @@ public class UpdateDispatcher {
             HandlerMethod handler = registry.findLocationHandler();
             if (handler != null) {
                 LocationContext ctx = new DefaultLocationContext(message, bot);
-                invokeAndReply(handler, ctx, null, message.chat().id());
+                invokeAndReply(handler, ctx, null, message.chat().id(), update);
             }
             return;
         }
@@ -79,7 +80,7 @@ public class UpdateDispatcher {
             String command = text.split(" ")[0]; // "/start args" -> "/start"
             HandlerMethod handler = registry.findCommandHandler(command);
             if (handler != null) {
-                invokeAndReply(handler, ctx, text, chatId);
+                invokeAndReply(handler, ctx, text, chatId, update);
                 return;
             }
         }
@@ -89,7 +90,7 @@ public class UpdateDispatcher {
         for (HandlerMethod handler : handlers) {
             OnMessage annotation = handler.getMethod().getAnnotation(OnMessage.class);
             if (matches(annotation, text)) {
-                invokeAndReply(handler, ctx, text, chatId);
+                invokeAndReply(handler, ctx, text, chatId, update);
                 return;
             }
         }
@@ -99,13 +100,13 @@ public class UpdateDispatcher {
     // Callback routing
     // -----------------------------------------------------------
 
-    private void handleCallback(CallbackQuery callback) throws Exception {
+    private void handleCallback(CallbackQuery callback, Update update) throws Exception {
         String data = callback.data();
         long chatId = callback.maybeInaccessibleMessage().chat().id();
         HandlerMethod handler = registry.findCallbackHandler(data);
         if (handler != null) {
             CallbackContext ctx = new DefaultCallbackContext(callback, bot);
-            invokeAndReply(handler, ctx, data, chatId);
+            invokeAndReply(handler, ctx, data, chatId, update);
         }
     }
 
@@ -117,34 +118,43 @@ public class UpdateDispatcher {
             HandlerMethod handler,
             BotContext ctx,
             String text,
-            long chatId) throws Exception {
+            long chatId,
+            Update update) throws Exception {
+
+        FilterResult result = handler.applyFilters(update);
+        if (!result.isPassed()) {
+            if (result.getFallback() != null) {
+                bot.execute(new SendMessage(chatId, result.getFallback()));
+            }
+            return;
+        }
 
         Method method = handler.getMethod();
-        Object result;
+        Object response;
 
         if (method.getParameterCount() == 0) {
             // @OnCommand("/start")
             // public String start() { }
-            result = handler.invoke();
+            response = handler.invoke();
         } else {
             Class<?> paramType = method.getParameterTypes()[0];
 
             if (BotContext.class.isAssignableFrom(paramType)) {
                 // @OnCommand("/start")
                 // public String start(MessageContext ctx) { }
-                result = handler.invoke(ctx);
+                response = handler.invoke(ctx);
             } else if (paramType == String.class) {
                 // @OnMessage
                 // public String echo(String text { }
-                result = handler.invoke(text);
+                response = handler.invoke(text);
             } else {
                 log.warn("Unsupported parameter type: {}", paramType.getName());
-                result = handler.invoke();
+                response = handler.invoke();
             }
         }
 
         // если метод вернул строку - отправляем как ответ
-        if (result instanceof String reply) {
+        if (response instanceof String reply) {
             bot.execute(new SendMessage(chatId, reply));
         }
     }

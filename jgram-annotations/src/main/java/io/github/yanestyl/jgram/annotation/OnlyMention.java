@@ -6,11 +6,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Handles incoming location messages.
- */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface OnLocation {
+public @interface OnlyMention {
+
+    /**
+     * Message to send if bot is not mentioned. Empty = ignore silently.
+     */
+    String fallback() default "";
 }

@@ -6,7 +6,7 @@
 
     <groupId>io.github.yanestyl</groupId>
     <artifactId>jgram-parent</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>JGram</name>
@@ -19,6 +19,7 @@
         <module>jgram-starter</module>
         <module>examples/echo-bot</module>
         <module>examples/context-bot</module>
+        <module>examples/filter-bot</module>
     </modules>
 
     <properties>
