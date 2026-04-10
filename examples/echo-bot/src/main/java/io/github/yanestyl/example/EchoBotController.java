@@ -3,13 +3,14 @@ package io.github.yanestyl.example;
 import io.github.yanestyl.jgram.annotation.BotController;
 import io.github.yanestyl.jgram.annotation.OnCommand;
 import io.github.yanestyl.jgram.annotation.OnMessage;
+import io.github.yanestyl.jgram.context.MessageContext;
 
 @BotController
 public class EchoBotController {
 
     @OnCommand("/start")
-    public String start() {
-        return "Привет! Я эхо-бот. Напиши мне что-нибудь \uD83D\uDC4B";
+    public String start(MessageContext ctx) {
+        return "Привет, " + ctx.user().firstName() + "! \uD83D\uDC4B";
     }
 
     @OnCommand("/help")
