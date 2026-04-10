@@ -19,6 +19,7 @@
         <module>jgram-starter</module>
         <module>examples/echo-bot</module>
         <module>examples/context-bot</module>
+        <module>examples/filter-bot</module>
     </modules>
 
     <properties>
