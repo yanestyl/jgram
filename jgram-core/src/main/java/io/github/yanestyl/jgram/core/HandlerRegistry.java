@@ -1,8 +1,6 @@
 package io.github.yanestyl.jgram.core;
 
-import io.github.yanestyl.jgram.annotation.OnCallbackQuery;
-import io.github.yanestyl.jgram.annotation.OnCommand;
-import io.github.yanestyl.jgram.annotation.OnMessage;
+import io.github.yanestyl.jgram.annotation.*;
 import io.github.yanestyl.jgram.handler.HandlerMethod;
 
 import java.lang.reflect.Method;
@@ -13,17 +11,12 @@ import java.util.Map;
 
 public class HandlerRegistry {
 
-    // "/start" -> HandlerMethod
-    private final Map<String, HandlerMethod> commandHandlers = new HashMap<>();
-
-    // список хендлеров для текстовых сообщений
-    private final List<HandlerMethod> messageHandlers = new ArrayList<>();
-
-    // "callback_data" -> HandlerMethod
-    private final Map<String, HandlerMethod> callbackHandlers = new HashMap<>();
-
-    // catch-all для callback
+    private final Map<String, HandlerMethod>    commandHandlers = new HashMap<>();
+    private final List<HandlerMethod>           messageHandlers = new ArrayList<>();
+    private final Map<String, HandlerMethod>    callbackHandlers = new HashMap<>();
     private HandlerMethod anyCallbackHandler;
+    private HandlerMethod photoHandler;
+    private HandlerMethod locationHandler;
 
     public void register(Object controllerInstance) {
         Class<?> clazz = controllerInstance.getClass();
@@ -48,6 +41,14 @@ public class HandlerRegistry {
                     callbackHandlers.put(data, new HandlerMethod(controllerInstance, method));
                 }
             }
+
+            if (method.isAnnotationPresent(OnPhoto.class)) {
+                photoHandler = new HandlerMethod(controllerInstance, method);
+            }
+
+            if (method.isAnnotationPresent(OnLocation.class)) {
+                locationHandler = new HandlerMethod(controllerInstance, method);
+            }
         }
     }
 
@@ -61,5 +62,13 @@ public class HandlerRegistry {
 
     public HandlerMethod findCallbackHandler(String data) {
         return callbackHandlers.getOrDefault(data, anyCallbackHandler);
+    }
+
+    public HandlerMethod findPhotoHandler() {
+        return photoHandler;
+    }
+
+    public HandlerMethod findLocationHandler() {
+        return locationHandler;
     }
 }

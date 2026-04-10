@@ -10,34 +10,32 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jgram-core</artifactId>
-    <name>JGram Core</name>
+    <artifactId>context-bot</artifactId>
+    <name>JGram Example - Context Bot</name>
 
     <dependencies>
         <dependency>
             <groupId>io.github.yanestyl</groupId>
-            <artifactId>jgram-annotations</artifactId>
+            <artifactId>jgram-starter</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.pengrad</groupId>
-            <artifactId>java-telegram-bot-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.classgraph</groupId>
-            <artifactId>classgraph</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <mainClass>io.github.yanestyl.example.context.ContextBotApp</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
