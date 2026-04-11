@@ -14,7 +14,7 @@
     <url>https://github.com/yanestyl/jgram</url>
 
     <modules>
-        <module>jgram-annotations</module>
+        <module>jgram-api</module>
         <module>jgram-core</module>
         <module>jgram-starter</module>
         <module>examples/echo-bot</module>

@@ -1,10 +1,10 @@
 package io.github.yanestyl.jgram.handler;
 
-import com.pengrad.telegrambot.model.Update;
 import io.github.yanestyl.jgram.annotation.ChatType;
 import io.github.yanestyl.jgram.annotation.OnlyMention;
 import io.github.yanestyl.jgram.annotation.UseFilter;
 import io.github.yanestyl.jgram.filter.Filter;
+import io.github.yanestyl.jgram.model.UpdateContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class HandlerMethod {
      * Checks all filters against the update.
      * Returns null if passed, or a fallback message if failed.
      */
-    public FilterResult applyFilters(Update update) {
+    public FilterResult applyFilters(UpdateContext update) {
         for (Filter filter : new Filter[]{chatTypeFilter, mentionFilter, customFilter}) {
             if (filter == null) continue;
             if (!filter.test(update)) {
@@ -72,14 +72,12 @@ public class HandlerMethod {
 
         return new Filter() {
             @Override
-            public boolean test(Update update) {
-                if (update.message() == null) return false;
-                String type = update.message().chat().type().name();
+            public boolean test(UpdateContext ctx) {
                 return switch (annotation.value()) {
-                    case PRIVATE -> "Private".equals(type);
-                    case GROUP -> "group".equals(type);
-                    case SUPERGROUP -> "supergroup".equals(type);
-                    case CHANNEL -> "channel".equals(type);
+                    case PRIVATE -> "Private".equals(ctx.chatType());
+                    case GROUP -> "group".equals(ctx.chatType());
+                    case SUPERGROUP -> "supergroup".equals(ctx.chatType());
+                    case CHANNEL -> "channel".equals(ctx.chatType());
                 };
             }
 
@@ -96,17 +94,10 @@ public class HandlerMethod {
 
         return new Filter() {
             @Override
-            public boolean test(Update update) {
-                if (update.message() == null) return false;
-                String text = update.message().text();
+            public boolean test(UpdateContext ctx) {
+                String text = ctx.text();
                 if (text == null) return false;
-                // проверяем наличие @username упоминания в тексте
-                var entities = update.message().entities();
-                if (entities == null) return false;
-                for (var entity : entities) {
-                    if ("mention".equalsIgnoreCase(entity.type().name())) return true;
-                }
-                return false;
+                return text.contains("@");
             }
 
             @Override

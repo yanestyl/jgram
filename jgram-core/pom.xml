@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.yanestyl</groupId>
-            <artifactId>jgram-annotations</artifactId>
+            <artifactId>jgram-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>

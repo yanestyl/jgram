@@ -10,7 +10,7 @@
         <version>0.4.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jgram-annotations</artifactId>
-    <name>JGram Annotations</name>
+    <artifactId>jgram-api</artifactId>
+    <name>JGram API</name>
 
 </project>

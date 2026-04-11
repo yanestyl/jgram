@@ -1,6 +1,6 @@
 package io.github.yanestyl.jgram.filter;
 
-import com.pengrad.telegrambot.model.Update;
+import io.github.yanestyl.jgram.model.UpdateContext;
 
 /**
  * Custom filter for handler methods.
@@ -27,7 +27,7 @@ public interface Filter {
     /**
      * Returns true if the update passes the filter.
      */
-    boolean test(Update update);
+    boolean test(UpdateContext update);
 
     /**
      * Message to send if filter fails.
