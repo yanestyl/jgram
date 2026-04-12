@@ -5,13 +5,14 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import io.github.yanestyl.jgram.context.LocationContext;
+import io.github.yanestyl.jgram.fsm.Session;
 
 public class DefaultLocationContext extends LocationContext {
     private final Message message;
     private final TelegramBot bot;
 
-    public DefaultLocationContext(Message message, TelegramBot bot) {
-        super(message.chat().id(), message.from());
+    public DefaultLocationContext(Message message, TelegramBot bot, Session session) {
+        super(message.chat().id(), message.from(), session);
         this.message = message;
         this.bot = bot;
     }

@@ -1,5 +1,6 @@
 package io.github.yanestyl.jgram.core;
 
+import io.github.yanestyl.jgram.annotation.fsm.OnState;
 import io.github.yanestyl.jgram.annotation.handler.*;
 import io.github.yanestyl.jgram.handler.HandlerMethod;
 
@@ -14,6 +15,7 @@ public class HandlerRegistry {
     private final Map<String, HandlerMethod>    commandHandlers = new HashMap<>();
     private final List<HandlerMethod>           messageHandlers = new ArrayList<>();
     private final Map<String, HandlerMethod>    callbackHandlers = new HashMap<>();
+    private final Map<String, HandlerMethod>    stateHandlers = new HashMap<>();
     private HandlerMethod anyCallbackHandler;
     private HandlerMethod photoHandler;
     private HandlerMethod locationHandler;
@@ -23,6 +25,11 @@ public class HandlerRegistry {
 
         for (Method method : clazz.getDeclaredMethods()) {
             method.setAccessible(true);
+
+            if (method.isAnnotationPresent(OnState.class)) {
+                String state = method.getAnnotation(OnState.class).value();
+                stateHandlers.put(state, new HandlerMethod(controllerInstance, method));
+            }
 
             if (method.isAnnotationPresent(OnCommand.class)) {
                 String command = method.getAnnotation(OnCommand.class).value();
@@ -70,5 +77,9 @@ public class HandlerRegistry {
 
     public HandlerMethod findLocationHandler() {
         return locationHandler;
+    }
+
+    public HandlerMethod findStateHandler(String state) {
+        return stateHandlers.get(state);
     }
 }

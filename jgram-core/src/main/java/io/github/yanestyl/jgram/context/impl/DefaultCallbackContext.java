@@ -6,14 +6,15 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.SendMessage;
 import io.github.yanestyl.jgram.context.CallbackContext;
+import io.github.yanestyl.jgram.fsm.Session;
 
 public class DefaultCallbackContext extends CallbackContext {
 
     private final CallbackQuery callbackQuery;
     private final TelegramBot bot;
 
-    public DefaultCallbackContext(CallbackQuery callbackQuery, TelegramBot bot) {
-        super(callbackQuery.maybeInaccessibleMessage().chat().id(), callbackQuery.from());
+    public DefaultCallbackContext(CallbackQuery callbackQuery, TelegramBot bot, Session session) {
+        super(callbackQuery.maybeInaccessibleMessage().chat().id(), callbackQuery.from(), session);
         this.callbackQuery = callbackQuery;
         this.bot = bot;
     }

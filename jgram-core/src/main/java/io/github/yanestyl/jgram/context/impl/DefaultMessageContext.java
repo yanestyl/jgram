@@ -5,14 +5,15 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import io.github.yanestyl.jgram.context.MessageContext;
+import io.github.yanestyl.jgram.fsm.Session;
 
 public class DefaultMessageContext extends MessageContext {
 
     private final Message message;
     private final TelegramBot bot;
 
-    public DefaultMessageContext(Message message, TelegramBot bot) {
-        super(message.chat().id(), message.from());
+    public DefaultMessageContext(Message message, TelegramBot bot, Session session) {
+        super(message.chat().id(), message.from(), session);
         this.message = message;
         this.bot = bot;
     }
