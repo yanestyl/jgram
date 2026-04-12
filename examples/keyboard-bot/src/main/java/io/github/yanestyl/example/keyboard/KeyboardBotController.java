@@ -22,9 +22,9 @@ public class KeyboardBotController {
         return BotResponse.text("Привет, " + ctx.user().firstName() + "! \uD83D\uDC4B\n" +
                         "Выбери раздел:")
                 .replyKeyboard(
-                        Row.of("Каталог", "Избранное"),
-                        Row.of("Корзина", "Настройки"),
-                        Row.of("Помощь")
+                        Row.of("📦 Каталог", "⭐ Избранное"),
+                        Row.of("🛒 Корзина", "⚙️ Настройки"),
+                        Row.of("ℹ️ Помощь")
                 ).resizable();
     }
 
@@ -32,50 +32,50 @@ public class KeyboardBotController {
     // Reply кнопки
     // -----------------------------------------------------------
 
-    @OnMessage(contains = "Каталог")
+    @OnMessage(contains = "📦 Каталог")
     public BotResponse catalog() {
-        return BotResponse.text("Наш каталог:")
+        return BotResponse.text("\uD83D\uDCE6 Наш каталог:")
                 .inlineKeyboard(
                         Row.of(
-                                Button.callback("Обувь", "cat_shoes"),
-                                Button.callback("Одежда", "cat_clothes")
+                                Button.callback("👟 Обувь", "cat_shoes"),
+                                Button.callback("👕 Одежда", "cat_clothes")
                         ),
                         Row.of(
-                                Button.callback("Электроника", "cat_electronics")
+                                Button.callback("💻 Электроника", "cat_electronics")
                         ),
                         Row.of(
-                                Button.url("Весь каталог на сайте", "https://example.com")
+                                Button.url("🌐 Весь каталог на сайте", "https://example.com")
                         )
                 );
     }
 
-    @OnMessage(contains = "Избранное")
+    @OnMessage(contains = "⭐ Избранное")
     public BotResponse favorites() {
-        return BotResponse.text("Твое избранное пусто!\n" +
+        return BotResponse.text("⭐ Твоё избранное пусто!\n" +
                 "Добавляй товары из каталога.");
     }
 
-    @OnMessage(contains = "Корзина")
+    @OnMessage(contains = "🛒 Корзина")
     public BotResponse cart() {
-        return BotResponse.text("Твоя корзина пуста!")
+        return BotResponse.text("🛒 Твоя корзина пуста!")
                 .inlineKeyboard(
-                        Row.of(Button.callback("Перейти в каталог", "go_catalog"))
+                        Row.of(Button.callback("📦 Перейти в каталог", "go_catalog"))
                 );
     }
 
-    @OnMessage(contains = "Настройки")
+    @OnMessage(contains = "⚙️ Настройки")
     public BotResponse settings() {
         return BotResponse.text("Настройки")
                 .inlineKeyboard(
-                        Row.of(Button.callback("Язык", "lang"),
-                                Button.callback("Уведомления", "notifications")),
-                        Row.of(Button.callback("Удалить аккаунт", "delete_account"))
+                        Row.of(Button.callback("🌍 Язык", "lang"),
+                                Button.callback("🔔 Уведомления", "notifications")),
+                        Row.of(Button.callback("🗑 Удалить аккаунт", "delete_account"))
                 );
     }
 
-    @OnMessage(contains = "Помощь")
+    @OnMessage(contains = "ℹ️ Помощь")
     public BotResponse help() {
-        return BotResponse.text("Помощь\n\n" +
+        return BotResponse.text("ℹ️ Помощь:\n\n" +
                 "/start - главное меню\n" +
                 "/cancel - убрать клавиатуру");
     }
@@ -87,19 +87,19 @@ public class KeyboardBotController {
     @OnCallbackQuery("cat_shoes")
     public void shoes(CallbackContext ctx) {
         ctx.answer();
-        ctx.reply("Раздел 'Обувь' - скоро здесь будут товары!");
+        ctx.reply("👟 Раздел «Обувь» — скоро здесь будут товары!");
     }
 
     @OnCallbackQuery("cat_clothes")
     public void clothes(CallbackContext ctx) {
         ctx.answer();
-        ctx.reply("Раздел 'Одежда' - скоро здесь будут товары!");
+        ctx.reply("👕 Раздел «Одежда» — скоро здесь будут товары!");
     }
 
     @OnCallbackQuery("cat_electronics")
     public void electronics(CallbackContext ctx) {
         ctx.answer();
-        ctx.reply("Раздел 'Электроника' - скоро здесь будут товары!");
+        ctx.reply("💻 Раздел «Электроника» — скоро здесь будут товары!");
     }
 
     @OnCallbackQuery("go_catalog")
@@ -110,17 +110,17 @@ public class KeyboardBotController {
 
     @OnCallbackQuery("lang")
     public void language(CallbackContext ctx) {
-        ctx.answerAlert("Смена языка пока недоступна!");
+        ctx.answerAlert("🌍 Смена языка пока недоступна!");
     }
 
     @OnCallbackQuery("notifications")
     public void notifications(CallbackContext ctx) {
-        ctx.answer("Уведомления включены!");
+        ctx.answer("🔔 Уведомления включены!");
     }
 
     @OnCallbackQuery("delete_account")
     public void deleteAccount(CallbackContext ctx) {
-        ctx.answer("Эта функция пока недоступна!");
+        ctx.answer("⚠️ Эта функция пока недоступна!");
     }
 
     // -----------------------------------------------------------
@@ -129,7 +129,7 @@ public class KeyboardBotController {
 
     @OnCommand("/cancel")
     public BotResponse cancel() {
-        return BotResponse.text("Клавиатура убрана")
+        return BotResponse.text("Клавиатура убрана ✅")
                 .removeKeyboard();
     }
 }
