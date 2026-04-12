@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import io.github.yanestyl.jgram.annotation.content.OnMessage;
+import io.github.yanestyl.jgram.config.model.JGramConfig;
 import io.github.yanestyl.jgram.context.BotContext;
 import io.github.yanestyl.jgram.context.CallbackContext;
 import io.github.yanestyl.jgram.context.MessageContext;
@@ -21,7 +22,6 @@ import io.github.yanestyl.jgram.response.BotResponseSender;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 @Slf4j
 public class UpdateDispatcher {
@@ -30,17 +30,23 @@ public class UpdateDispatcher {
     private final TelegramBot bot;
     private final StateManager stateManager;
     private final SessionManager sessionManager;
+    private final JGramConfig config;
 
-    public UpdateDispatcher(HandlerRegistry registry, TelegramBot bot) {
+    public UpdateDispatcher(HandlerRegistry registry, TelegramBot bot, JGramConfig config) {
         this.registry = registry;
         this.bot = bot;
         this.stateManager = new StateManager();
         this.sessionManager = new SessionManager();
+        this.config = config;
     }
 
     public void dispatch(Update update) {
         try {
             UpdateContext updateCtx = UpdateContextMapper.map(update);
+
+            if (config.getLogging().isHandlers()) {
+                log.debug("Dispatching update type: {}", updateCtx.updateType());
+            }
 
             if (update.message() != null) {
                 handleMessage(update.message(), updateCtx);

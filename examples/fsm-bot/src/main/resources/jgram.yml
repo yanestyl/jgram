@@ -1,0 +1,13 @@
+jgram:
+  token: ${BOT_TOKEN}
+
+  polling:
+    timeout: 30
+    limit: 100
+    allowed-updates:
+      - message
+      - callback_query
+
+  logging:
+    updates: true
+    handlers: true
