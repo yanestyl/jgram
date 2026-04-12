@@ -1,6 +1,10 @@
 package io.github.yanestyl.example.context;
 
 import io.github.yanestyl.jgram.annotation.*;
+import io.github.yanestyl.jgram.annotation.content.OnCommand;
+import io.github.yanestyl.jgram.annotation.content.OnLocation;
+import io.github.yanestyl.jgram.annotation.content.OnMessage;
+import io.github.yanestyl.jgram.annotation.content.OnPhoto;
 import io.github.yanestyl.jgram.context.LocationContext;
 import io.github.yanestyl.jgram.context.MessageContext;
 import io.github.yanestyl.jgram.context.PhotoContext;

@@ -6,14 +6,15 @@ import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import io.github.yanestyl.jgram.context.PhotoContext;
+import io.github.yanestyl.jgram.fsm.Session;
 
 public class DefaultPhotoContext extends PhotoContext {
 
     private final Message message;
     private final TelegramBot bot;
 
-    public DefaultPhotoContext(Message message, TelegramBot bot) {
-        super(message.chat().id(), message.from());
+    public DefaultPhotoContext(Message message, TelegramBot bot, Session session) {
+        super(message.chat().id(), message.from(), session);
         this.message = message;
         this.bot = bot;
     }

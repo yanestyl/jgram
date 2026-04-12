@@ -1,23 +1,29 @@
 package io.github.yanestyl.jgram.handler;
 
-import io.github.yanestyl.jgram.annotation.ChatType;
-import io.github.yanestyl.jgram.annotation.OnlyMention;
-import io.github.yanestyl.jgram.annotation.UseFilter;
+import io.github.yanestyl.jgram.annotation.filter.ChatType;
+import io.github.yanestyl.jgram.annotation.filter.OnlyMention;
+import io.github.yanestyl.jgram.annotation.filter.UseFilter;
+import io.github.yanestyl.jgram.annotation.fsm.ClearsState;
+import io.github.yanestyl.jgram.annotation.fsm.EnterState;
+import io.github.yanestyl.jgram.annotation.fsm.ExitState;
+import io.github.yanestyl.jgram.annotation.fsm.NextState;
+import io.github.yanestyl.jgram.annotation.fsm.OnState;
 import io.github.yanestyl.jgram.filter.Filter;
 import io.github.yanestyl.jgram.model.UpdateContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 
 /**
  * Represents a single registered handler method.
  */
+@Slf4j
 public class HandlerMethod {
 
-    private static final Logger log = LoggerFactory.getLogger(HandlerMethod.class);
-
+    @Getter
     private final Object instance;
+    @Getter
     private final Method method;
 
     // кэшируем фильтры при регистрации
@@ -31,14 +37,6 @@ public class HandlerMethod {
         this.chatTypeFilter = buildChatTypeFilter(method);
         this.mentionFilter  = buildMentionFilter(method);
         this.customFilter   = buildCustomFilter(method);
-    }
-
-    public Object getInstance() {
-        return instance;
-    }
-
-    public Method getMethod() {
-        return method;
     }
 
     /**
@@ -74,10 +72,10 @@ public class HandlerMethod {
             @Override
             public boolean test(UpdateContext ctx) {
                 return switch (annotation.value()) {
-                    case PRIVATE -> "Private".equals(ctx.chatType());
-                    case GROUP -> "group".equals(ctx.chatType());
-                    case SUPERGROUP -> "supergroup".equals(ctx.chatType());
-                    case CHANNEL -> "channel".equals(ctx.chatType());
+                    case PRIVATE    -> ctx.chatType() == UpdateContext.ChatType.PRIVATE;
+                    case GROUP      -> ctx.chatType() == UpdateContext.ChatType.GROUP;
+                    case SUPERGROUP -> ctx.chatType() == UpdateContext.ChatType.SUPERGROUP;
+                    case CHANNEL    -> ctx.chatType() == UpdateContext.ChatType.CHANNEL;
                 };
             }
 
@@ -117,5 +115,38 @@ public class HandlerMethod {
             log.error("Failed to instantiate filter: {}", filterClass.getSimpleName(), e);
             return null;
         }
+    }
+
+    // геттеры для FSM аннотаций
+    public boolean hasEnterState() {
+        return method.isAnnotationPresent(EnterState.class);
+    }
+
+    public String getEnterState() {
+        return method.getAnnotation(EnterState.class).value();
+    }
+
+    public boolean hasOnState() {
+        return method.isAnnotationPresent(OnState.class);
+    }
+
+    public String getOnState() {
+        return method.getAnnotation(OnState.class).value();
+    }
+
+    public boolean hasNextState() {
+        return method.isAnnotationPresent(NextState.class);
+    }
+
+    public String getNextState() {
+        return method.getAnnotation(NextState.class).value();
+    }
+
+    public boolean hasExitState() {
+        return method.isAnnotationPresent(ExitState.class);
+    }
+
+    public boolean hasClearsState() {
+        return method.isAnnotationPresent(ClearsState.class);
     }
 }

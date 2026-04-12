@@ -1,8 +1,11 @@
 package io.github.yanestyl.jgram.handler;
 
+import lombok.Getter;
+
 /**
  * Result of applying filters to an update.
  */
+@Getter
 public class FilterResult {
 
     private final boolean passed;
@@ -21,11 +24,4 @@ public class FilterResult {
         return new FilterResult(false, fallback);
     }
 
-    public boolean isPassed() {
-        return passed;
-    }
-
-    public String getFallback() {
-        return fallback;
-    }
 }

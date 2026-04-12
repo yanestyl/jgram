@@ -1,4 +1,4 @@
-package io.github.yanestyl.jgram.annotation;
+package io.github.yanestyl.jgram.annotation.filter;
 
 import io.github.yanestyl.jgram.filter.Filter;
 
