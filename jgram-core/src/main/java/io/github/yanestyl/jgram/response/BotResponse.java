@@ -1,5 +1,7 @@
 package io.github.yanestyl.jgram.response;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +22,7 @@ import java.util.List;
  *          ).resizable();
  * </pre>
  */
+@Getter
 public class BotResponse {
 
     public enum KeyboardType { INLINE, REPLY, REMOVE, NONE }
@@ -83,23 +86,4 @@ public class BotResponse {
     // Getters
     // -----------------------------------------------------------
 
-    public String getText() {
-        return text;
-    }
-
-    public List<Row> getRows() {
-        return rows;
-    }
-
-    public KeyboardType getKeyboardType() {
-        return keyboardType;
-    }
-
-    public boolean isResizable() {
-        return resizable;
-    }
-
-    public boolean isOneTime() {
-        return oneTime;
-    }
 }

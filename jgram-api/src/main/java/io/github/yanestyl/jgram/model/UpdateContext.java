@@ -2,12 +2,14 @@ package io.github.yanestyl.jgram.model;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 
 /**
  * Transport-agnostic representation of an incoming update.
  * Abstracts away the underlying API library (e.g. pengrad).
  */
 @Getter
+@Accessors(fluent = true)
 @Builder
 public class UpdateContext {
 

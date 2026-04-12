@@ -1,8 +1,11 @@
 package io.github.yanestyl.jgram.response;
 
+import lombok.Getter;
+
 /**
  * Represents a single keyboard button.
  */
+@Getter
 public class Button {
 
     public enum Type { CALLBACK, URL, REPLY }
@@ -31,15 +34,4 @@ public class Button {
         return new Button(text, null, Type.REPLY);
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public Type getType() {
-        return type;
-    }
 }

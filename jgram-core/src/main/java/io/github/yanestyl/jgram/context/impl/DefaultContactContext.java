@@ -22,7 +22,7 @@ public class DefaultContactContext extends ContactContext {
     @Override public String phoneNumber()   { return contact.phoneNumber(); }
     @Override public String firstName()     { return contact.firstName(); }
     @Override public String lastName()      { return contact.lastName(); }
-    @Override public Long contactUserId()   { return contact.userId() != null ? contact.userId().longValue() : null; }
+    @Override public Long contactUserId()   { return contact.userId() != null ? contact.userId() : null; }
 
     @Override
     public void reply(String text) {

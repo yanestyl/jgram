@@ -10,6 +10,7 @@ import io.github.yanestyl.jgram.annotation.fsm.NextState;
 import io.github.yanestyl.jgram.annotation.fsm.OnState;
 import io.github.yanestyl.jgram.filter.Filter;
 import io.github.yanestyl.jgram.model.UpdateContext;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
@@ -20,7 +21,9 @@ import java.lang.reflect.Method;
 @Slf4j
 public class HandlerMethod {
 
+    @Getter
     private final Object instance;
+    @Getter
     private final Method method;
 
     // кэшируем фильтры при регистрации
@@ -34,14 +37,6 @@ public class HandlerMethod {
         this.chatTypeFilter = buildChatTypeFilter(method);
         this.mentionFilter  = buildMentionFilter(method);
         this.customFilter   = buildCustomFilter(method);
-    }
-
-    public Object getInstance() {
-        return instance;
-    }
-
-    public Method getMethod() {
-        return method;
     }
 
     /**
@@ -77,10 +72,10 @@ public class HandlerMethod {
             @Override
             public boolean test(UpdateContext ctx) {
                 return switch (annotation.value()) {
-                    case PRIVATE    -> ctx.getChatType() == UpdateContext.ChatType.PRIVATE;
-                    case GROUP      -> ctx.getChatType() == UpdateContext.ChatType.GROUP;
-                    case SUPERGROUP -> ctx.getChatType() == UpdateContext.ChatType.SUPERGROUP;
-                    case CHANNEL    -> ctx.getChatType() == UpdateContext.ChatType.CHANNEL;
+                    case PRIVATE    -> ctx.chatType() == UpdateContext.ChatType.PRIVATE;
+                    case GROUP      -> ctx.chatType() == UpdateContext.ChatType.GROUP;
+                    case SUPERGROUP -> ctx.chatType() == UpdateContext.ChatType.SUPERGROUP;
+                    case CHANNEL    -> ctx.chatType() == UpdateContext.ChatType.CHANNEL;
                 };
             }
 
@@ -98,7 +93,7 @@ public class HandlerMethod {
         return new Filter() {
             @Override
             public boolean test(UpdateContext ctx) {
-                String text = ctx.getText();
+                String text = ctx.text();
                 if (text == null) return false;
                 return text.contains("@");
             }

@@ -4,11 +4,13 @@ import com.pengrad.telegrambot.model.User;
 import io.github.yanestyl.jgram.fsm.Session;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * Base context available in all handlers.
  */
 @Getter
+@Accessors(fluent = true)
 @RequiredArgsConstructor
 public abstract class BotContext {
 

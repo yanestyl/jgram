@@ -32,9 +32,9 @@ public class UpdateDispatcher {
     private final SessionManager sessionManager;
 
     public UpdateDispatcher(HandlerRegistry registry, TelegramBot bot) {
-        this.registry       = registry;
-        this.bot            = bot;
-        this.stateManager   = new StateManager();
+        this.registry = registry;
+        this.bot = bot;
+        this.stateManager = new StateManager();
         this.sessionManager = new SessionManager();
     }
 
@@ -57,8 +57,8 @@ public class UpdateDispatcher {
     // -----------------------------------------------------------
 
     private void handleMessage(Message message, UpdateContext updateCtx) throws Exception {
-        long userId  = message.from().id();
-        long chatId  = message.chat().id();
+        long userId = message.from().id();
+        long chatId = message.chat().id();
         Session session = sessionManager.getSession(userId);
 
         // анимация — проверяем до фото т.к. GIF может прийти как документ
@@ -153,6 +153,19 @@ public class UpdateDispatcher {
             }
         }
 
+        // @OnMessage с @ClearsState — проверяем ДО состояния
+        for (HandlerMethod handler : registry.getMessageHandlers()) {
+            if (handler.hasClearsState()) {
+                OnMessage annotation = handler.getMethod().getAnnotation(OnMessage.class);
+                if (matches(annotation, text)) {
+                    stateManager.clearState(userId);
+                    sessionManager.clearSession(userId);
+                    handle(handler, ctx, text, chatId, updateCtx, userId);
+                    return;
+                }
+            }
+        }
+
         // пользователь в состоянии?
         if (stateManager.hasState(userId)) {
             String currentState = stateManager.getState(userId);
@@ -164,12 +177,13 @@ public class UpdateDispatcher {
         }
 
         // обычные @OnMessage
-        List<HandlerMethod> handlers = registry.getMessageHandlers();
-        for (HandlerMethod handler : handlers) {
-            OnMessage annotation = handler.getMethod().getAnnotation(OnMessage.class);
-            if (matches(annotation, text)) {
-                handle(handler, ctx, text, chatId, updateCtx, userId);
-                return;
+        for (HandlerMethod handler : registry.getMessageHandlers()) {
+            if (!handler.hasClearsState()) {
+                OnMessage annotation = handler.getMethod().getAnnotation(OnMessage.class);
+                if (matches(annotation, text)) {
+                    handle(handler, ctx, text, chatId, updateCtx, userId);
+                    return;
+                }
             }
         }
     }
@@ -179,9 +193,9 @@ public class UpdateDispatcher {
     // -----------------------------------------------------------
 
     private void handleCallback(CallbackQuery callback, UpdateContext updateCtx) throws Exception {
-        String data  = callback.data();
-        long chatId  = callback.message().chat().id();
-        long userId  = callback.from().id();
+        String data = callback.data();
+        long chatId = callback.maybeInaccessibleMessage().chat().id();
+        long userId = callback.from().id();
         Session session = sessionManager.getSession(userId);
         CallbackContext ctx = new DefaultCallbackContext(callback, bot, session);
 
@@ -257,7 +271,6 @@ public class UpdateDispatcher {
     private boolean matches(OnMessage annotation, String text) {
         if (!annotation.contains().isEmpty() && !text.contains(annotation.contains())) return false;
         if (!annotation.startsWith().isEmpty() && !text.startsWith(annotation.startsWith())) return false;
-        if (!annotation.regex().isEmpty() && !text.matches(annotation.regex())) return false;
-        return true;
+        return annotation.regex().isEmpty() || text.matches(annotation.regex());
     }
 }

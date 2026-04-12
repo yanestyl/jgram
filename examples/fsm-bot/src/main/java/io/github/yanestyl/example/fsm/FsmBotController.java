@@ -1,9 +1,11 @@
 package io.github.yanestyl.example.fsm;
 
 import io.github.yanestyl.jgram.annotation.BotController;
+import io.github.yanestyl.jgram.annotation.content.OnCallbackQuery;
 import io.github.yanestyl.jgram.annotation.fsm.*;
 import io.github.yanestyl.jgram.annotation.content.OnCommand;
 import io.github.yanestyl.jgram.annotation.content.OnMessage;
+import io.github.yanestyl.jgram.context.CallbackContext;
 import io.github.yanestyl.jgram.context.MessageContext;
 import io.github.yanestyl.jgram.response.BotResponse;
 import io.github.yanestyl.jgram.response.Button;
@@ -118,11 +120,48 @@ public class FsmBotController {
                 );
     }
 
-    @OnState("FEEDBACK_WAITING_RATING")
+    // ---------------------------------------------------------------
+    // Обработка оценок через callback
+    // ---------------------------------------------------------------
+
+    @OnCallbackQuery("rating_1")
     @NextState("FEEDBACK_WAITING_TEXT")
-    public String getFeedbackRating(MessageContext ctx) {
-        ctx.session().put("rating", ctx.text());
-        return "✅ Оценка сохранена!\n\nШаг 2 из 2: Напишите ваш отзыв:";
+    public void rating1(CallbackContext ctx) {
+        ctx.answer();
+        ctx.session().put("rating", "1 ⭐");
+        ctx.reply("✅ Оценка сохранена!\n\nШаг 2 из 2: Напишите ваш отзыв:");
+    }
+
+    @OnCallbackQuery("rating_2")
+    @NextState("FEEDBACK_WAITING_TEXT")
+    public void rating2(CallbackContext ctx) {
+        ctx.answer();
+        ctx.session().put("rating", "2 ⭐");
+        ctx.reply("✅ Оценка сохранена!\n\nШаг 2 из 2: Напишите ваш отзыв:");
+    }
+
+    @OnCallbackQuery("rating_3")
+    @NextState("FEEDBACK_WAITING_TEXT")
+    public void rating3(CallbackContext ctx) {
+        ctx.answer();
+        ctx.session().put("rating", "3 ⭐");
+        ctx.reply("✅ Оценка сохранена!\n\nШаг 2 из 2: Напишите ваш отзыв:");
+    }
+
+    @OnCallbackQuery("rating_4")
+    @NextState("FEEDBACK_WAITING_TEXT")
+    public void rating4(CallbackContext ctx) {
+        ctx.answer();
+        ctx.session().put("rating", "4 ⭐");
+        ctx.reply("✅ Оценка сохранена!\n\nШаг 2 из 2: Напишите ваш отзыв:");
+    }
+
+    @OnCallbackQuery("rating_5")
+    @NextState("FEEDBACK_WAITING_TEXT")
+    public void rating5(CallbackContext ctx) {
+        ctx.answer();
+        ctx.session().put("rating", "5 ⭐");
+        ctx.reply("✅ Оценка сохранена!\n\nШаг 2 из 2: Напишите ваш отзыв:");
     }
 
     @OnState("FEEDBACK_WAITING_TEXT")
