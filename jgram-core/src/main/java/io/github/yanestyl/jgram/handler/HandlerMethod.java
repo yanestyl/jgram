@@ -10,17 +10,15 @@ import io.github.yanestyl.jgram.annotation.fsm.NextState;
 import io.github.yanestyl.jgram.annotation.fsm.OnState;
 import io.github.yanestyl.jgram.filter.Filter;
 import io.github.yanestyl.jgram.model.UpdateContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 
 /**
  * Represents a single registered handler method.
  */
+@Slf4j
 public class HandlerMethod {
-
-    private static final Logger log = LoggerFactory.getLogger(HandlerMethod.class);
 
     private final Object instance;
     private final Method method;
@@ -79,10 +77,10 @@ public class HandlerMethod {
             @Override
             public boolean test(UpdateContext ctx) {
                 return switch (annotation.value()) {
-                    case PRIVATE -> "Private".equals(ctx.chatType());
-                    case GROUP -> "group".equals(ctx.chatType());
-                    case SUPERGROUP -> "supergroup".equals(ctx.chatType());
-                    case CHANNEL -> "channel".equals(ctx.chatType());
+                    case PRIVATE    -> ctx.getChatType() == UpdateContext.ChatType.PRIVATE;
+                    case GROUP      -> ctx.getChatType() == UpdateContext.ChatType.GROUP;
+                    case SUPERGROUP -> ctx.getChatType() == UpdateContext.ChatType.SUPERGROUP;
+                    case CHANNEL    -> ctx.getChatType() == UpdateContext.ChatType.CHANNEL;
                 };
             }
 
@@ -100,7 +98,7 @@ public class HandlerMethod {
         return new Filter() {
             @Override
             public boolean test(UpdateContext ctx) {
-                String text = ctx.text();
+                String text = ctx.getText();
                 if (text == null) return false;
                 return text.contains("@");
             }

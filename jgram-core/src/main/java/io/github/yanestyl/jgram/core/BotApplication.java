@@ -5,12 +5,10 @@ import com.pengrad.telegrambot.UpdatesListener;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import io.github.yanestyl.jgram.annotation.BotController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class BotApplication {
-
-    private static final Logger log = LoggerFactory.getLogger(BotApplication.class);
 
     public static void run(String token, String basePackage) {
         log.info("Starting JGram...");

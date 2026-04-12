@@ -8,13 +8,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 import io.github.yanestyl.jgram.annotation.content.OnMessage;
 import io.github.yanestyl.jgram.context.BotContext;
 import io.github.yanestyl.jgram.context.CallbackContext;
-import io.github.yanestyl.jgram.context.LocationContext;
 import io.github.yanestyl.jgram.context.MessageContext;
-import io.github.yanestyl.jgram.context.PhotoContext;
-import io.github.yanestyl.jgram.context.impl.DefaultCallbackContext;
-import io.github.yanestyl.jgram.context.impl.DefaultLocationContext;
-import io.github.yanestyl.jgram.context.impl.DefaultMessageContext;
-import io.github.yanestyl.jgram.context.impl.DefaultPhotoContext;
+import io.github.yanestyl.jgram.context.impl.*;
 import io.github.yanestyl.jgram.fsm.Session;
 import io.github.yanestyl.jgram.fsm.SessionManager;
 import io.github.yanestyl.jgram.fsm.StateManager;
@@ -23,14 +18,13 @@ import io.github.yanestyl.jgram.handler.HandlerMethod;
 import io.github.yanestyl.jgram.model.UpdateContext;
 import io.github.yanestyl.jgram.response.BotResponse;
 import io.github.yanestyl.jgram.response.BotResponseSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
+@Slf4j
 public class UpdateDispatcher {
-
-    private static final Logger log = LoggerFactory.getLogger(UpdateDispatcher.class);
 
     private final HandlerRegistry registry;
     private final TelegramBot bot;
@@ -38,8 +32,8 @@ public class UpdateDispatcher {
     private final SessionManager sessionManager;
 
     public UpdateDispatcher(HandlerRegistry registry, TelegramBot bot) {
-        this.registry = registry;
-        this.bot = bot;
+        this.registry       = registry;
+        this.bot            = bot;
         this.stateManager   = new StateManager();
         this.sessionManager = new SessionManager();
     }
@@ -63,34 +57,85 @@ public class UpdateDispatcher {
     // -----------------------------------------------------------
 
     private void handleMessage(Message message, UpdateContext updateCtx) throws Exception {
-        long userId = message.from().id();
+        long userId  = message.from().id();
+        long chatId  = message.chat().id();
         Session session = sessionManager.getSession(userId);
+
+        // анимация — проверяем до фото т.к. GIF может прийти как документ
+        if (message.animation() != null) {
+            handle(registry.findAnimationHandler(),
+                    new DefaultAnimationContext(message, bot, session),
+                    null, chatId, updateCtx, userId);
+            return;
+        }
 
         // фото
         if (message.photo() != null) {
-            HandlerMethod handler = registry.findPhotoHandler();
-            if (handler != null) {
-                PhotoContext ctx = new DefaultPhotoContext(message, bot, session);
-                invokeAndReply(handler, ctx, null, message.chat().id(), updateCtx, userId);
-            }
+            handle(registry.findPhotoHandler(),
+                    new DefaultPhotoContext(message, bot, session),
+                    null, chatId, updateCtx, userId);
+            return;
+        }
+
+        // стикер
+        if (message.sticker() != null) {
+            handle(registry.findStickerHandler(),
+                    new DefaultStickerContext(message, bot, session),
+                    null, chatId, updateCtx, userId);
+            return;
+        }
+
+        // видео
+        if (message.video() != null) {
+            handle(registry.findVideoHandler(),
+                    new DefaultVideoContext(message, bot, session),
+                    null, chatId, updateCtx, userId);
+            return;
+        }
+
+        // документ
+        if (message.document() != null) {
+            handle(registry.findDocumentHandler(),
+                    new DefaultDocumentContext(message, bot, session),
+                    null, chatId, updateCtx, userId);
+            return;
+        }
+
+        // аудио
+        if (message.audio() != null) {
+            handle(registry.findAudioHandler(),
+                    new DefaultAudioContext(message, bot, session),
+                    null, chatId, updateCtx, userId);
+            return;
+        }
+
+        // голосовое
+        if (message.voice() != null) {
+            handle(registry.findVoiceHandler(),
+                    new DefaultVoiceContext(message, bot, session),
+                    null, chatId, updateCtx, userId);
+            return;
+        }
+
+        // контакт
+        if (message.contact() != null) {
+            handle(registry.findContactHandler(),
+                    new DefaultContactContext(message, bot, session),
+                    null, chatId, updateCtx, userId);
             return;
         }
 
         // геолокация
         if (message.location() != null) {
-            HandlerMethod handler = registry.findLocationHandler();
-            if (handler != null) {
-                LocationContext ctx = new DefaultLocationContext(message, bot, session);
-                invokeAndReply(handler, ctx, null, message.chat().id(), updateCtx, userId);
-            }
+            handle(registry.findLocationHandler(),
+                    new DefaultLocationContext(message, bot, session),
+                    null, chatId, updateCtx, userId);
             return;
         }
 
         // текст
         String text = message.text();
         if (text == null) return;
-
-        long chatId = message.chat().id();
 
         MessageContext ctx = new DefaultMessageContext(message, bot, session);
 
@@ -103,24 +148,27 @@ public class UpdateDispatcher {
                     stateManager.clearState(userId);
                     sessionManager.clearSession(userId);
                 }
-                invokeAndReply(handler, ctx, text, chatId, updateCtx, userId);
+                handle(handler, ctx, text, chatId, updateCtx, userId);
                 return;
             }
         }
 
+        // пользователь в состоянии?
         if (stateManager.hasState(userId)) {
             String currentState = stateManager.getState(userId);
             HandlerMethod handler = registry.findStateHandler(currentState);
             if (handler != null) {
-                invokeAndReply(handler, ctx, text, chatId, updateCtx, userId);
+                handle(handler, ctx, text, chatId, updateCtx, userId);
                 return;
             }
         }
 
-        for (HandlerMethod handler : registry.getMessageHandlers()) {
+        // обычные @OnMessage
+        List<HandlerMethod> handlers = registry.getMessageHandlers();
+        for (HandlerMethod handler : handlers) {
             OnMessage annotation = handler.getMethod().getAnnotation(OnMessage.class);
             if (matches(annotation, text)) {
-                invokeAndReply(handler, ctx, text, chatId, updateCtx, userId);
+                handle(handler, ctx, text, chatId, updateCtx, userId);
                 return;
             }
         }
@@ -131,23 +179,23 @@ public class UpdateDispatcher {
     // -----------------------------------------------------------
 
     private void handleCallback(CallbackQuery callback, UpdateContext updateCtx) throws Exception {
-        long userId = callback.from().id();
+        String data  = callback.data();
+        long chatId  = callback.message().chat().id();
+        long userId  = callback.from().id();
         Session session = sessionManager.getSession(userId);
+        CallbackContext ctx = new DefaultCallbackContext(callback, bot, session);
 
-        String data = callback.data();
-        long chatId = callback.maybeInaccessibleMessage().chat().id();
         HandlerMethod handler = registry.findCallbackHandler(data);
         if (handler != null) {
-            CallbackContext ctx = new DefaultCallbackContext(callback, bot, session);
-            invokeAndReply(handler, ctx, data, chatId, updateCtx, userId);
+            handle(handler, ctx, data, chatId, updateCtx, userId);
         }
     }
 
     // -----------------------------------------------------------
-    // Invocation - определяем что ждет метод и передаем нужное
+    // Unified invocation
     // -----------------------------------------------------------
 
-    private void invokeAndReply(
+    private void handle(
             HandlerMethod handler,
             BotContext ctx,
             String text,
@@ -155,6 +203,9 @@ public class UpdateDispatcher {
             UpdateContext updateCtx,
             long userId) throws Exception {
 
+        if (handler == null) return;
+
+        // фильтры
         FilterResult result = handler.applyFilters(updateCtx);
         if (!result.isPassed()) {
             if (result.getFallback() != null) {
@@ -163,23 +214,17 @@ public class UpdateDispatcher {
             return;
         }
 
+        // вызов хендлера
         Method method = handler.getMethod();
         Object response;
 
         if (method.getParameterCount() == 0) {
-            // @OnCommand("/start")
-            // public String start() { }
             response = handler.invoke();
         } else {
             Class<?> paramType = method.getParameterTypes()[0];
-
             if (BotContext.class.isAssignableFrom(paramType)) {
-                // @OnCommand("/start")
-                // public String start(MessageContext ctx) { }
                 response = handler.invoke(ctx);
             } else if (paramType == String.class) {
-                // @OnMessage
-                // public String echo(String text { }
                 response = handler.invoke(text);
             } else {
                 log.warn("Unsupported parameter type: {}", paramType.getName());
@@ -187,14 +232,14 @@ public class UpdateDispatcher {
             }
         }
 
-        // если метод вернул строку - отправляем как ответ
+        // отправляем ответ
         if (response instanceof String reply) {
             bot.execute(new SendMessage(chatId, reply));
         } else if (response instanceof BotResponse botResponse) {
             new BotResponseSender(bot).send(chatId, botResponse);
         }
 
-        // FSM переходы - после вызова хендлера
+        // FSM переходы
         if (handler.hasExitState()) {
             stateManager.clearState(userId);
             sessionManager.clearSession(userId);
@@ -206,7 +251,7 @@ public class UpdateDispatcher {
     }
 
     // -----------------------------------------------------------
-    // Filter matching
+    // Helpers
     // -----------------------------------------------------------
 
     private boolean matches(OnMessage annotation, String text) {

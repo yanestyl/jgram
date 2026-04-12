@@ -8,6 +8,7 @@ import io.github.yanestyl.jgram.context.LocationContext;
 import io.github.yanestyl.jgram.fsm.Session;
 
 public class DefaultLocationContext extends LocationContext {
+
     private final Message message;
     private final TelegramBot bot;
 
