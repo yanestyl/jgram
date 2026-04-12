@@ -19,7 +19,7 @@ public final class JGram {
         return this;
     }
 
-    public void run(Class<?> appClass, String[] args) {
+    public void start(Class<?> appClass, String[] args) {
         if (!appClass.isAnnotationPresent(JGramApplication.class)) {
             throw new IllegalArgumentException(
                     appClass.getSimpleName() + " must be annotated with @JGramApplication"
@@ -33,6 +33,6 @@ public final class JGram {
 
     // shortcut — самый простой способ запуска
     public static void run(Class<?> appClass, String[] args) {
-        new JGram().run(appClass, args);
+        new JGram().start(appClass, args);
     }
 }
