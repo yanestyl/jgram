@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import io.github.yanestyl.jgram.annotation.handler.OnMessage;
+import io.github.yanestyl.jgram.annotation.content.OnMessage;
 import io.github.yanestyl.jgram.context.BotContext;
 import io.github.yanestyl.jgram.context.CallbackContext;
 import io.github.yanestyl.jgram.context.LocationContext;

@@ -1,8 +1,8 @@
 package io.github.yanestyl.example.echo;
 
 import io.github.yanestyl.jgram.annotation.BotController;
-import io.github.yanestyl.jgram.annotation.handler.OnCommand;
-import io.github.yanestyl.jgram.annotation.handler.OnMessage;
+import io.github.yanestyl.jgram.annotation.content.OnCommand;
+import io.github.yanestyl.jgram.annotation.content.OnMessage;
 import io.github.yanestyl.jgram.context.MessageContext;
 
 @BotController

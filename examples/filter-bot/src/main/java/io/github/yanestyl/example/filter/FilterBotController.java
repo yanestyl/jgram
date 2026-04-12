@@ -5,8 +5,8 @@ import io.github.yanestyl.jgram.annotation.*;
 import io.github.yanestyl.jgram.annotation.filter.ChatType;
 import io.github.yanestyl.jgram.annotation.filter.OnlyMention;
 import io.github.yanestyl.jgram.annotation.filter.UseFilter;
-import io.github.yanestyl.jgram.annotation.handler.OnCommand;
-import io.github.yanestyl.jgram.annotation.handler.OnMessage;
+import io.github.yanestyl.jgram.annotation.content.OnCommand;
+import io.github.yanestyl.jgram.annotation.content.OnMessage;
 import io.github.yanestyl.jgram.context.MessageContext;
 
 @BotController

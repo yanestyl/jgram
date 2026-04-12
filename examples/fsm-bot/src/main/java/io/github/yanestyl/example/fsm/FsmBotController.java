@@ -2,8 +2,8 @@ package io.github.yanestyl.example.fsm;
 
 import io.github.yanestyl.jgram.annotation.BotController;
 import io.github.yanestyl.jgram.annotation.fsm.*;
-import io.github.yanestyl.jgram.annotation.handler.OnCommand;
-import io.github.yanestyl.jgram.annotation.handler.OnMessage;
+import io.github.yanestyl.jgram.annotation.content.OnCommand;
+import io.github.yanestyl.jgram.annotation.content.OnMessage;
 import io.github.yanestyl.jgram.context.MessageContext;
 import io.github.yanestyl.jgram.response.BotResponse;
 import io.github.yanestyl.jgram.response.Button;

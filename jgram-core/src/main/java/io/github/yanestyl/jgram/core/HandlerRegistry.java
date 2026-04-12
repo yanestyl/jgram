@@ -1,7 +1,7 @@
 package io.github.yanestyl.jgram.core;
 
 import io.github.yanestyl.jgram.annotation.fsm.OnState;
-import io.github.yanestyl.jgram.annotation.handler.*;
+import io.github.yanestyl.jgram.annotation.content.*;
 import io.github.yanestyl.jgram.handler.HandlerMethod;
 
 import java.lang.reflect.Method;
