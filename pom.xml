@@ -21,6 +21,7 @@
         <module>examples/context-bot</module>
         <module>examples/filter-bot</module>
         <module>examples/keyboard-bot</module>
+        <module>examples/fsm-bot</module>
     </modules>
 
     <properties>
