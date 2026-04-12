@@ -1,4 +1,4 @@
-package io.github.yanestyl.jgram.annotation;
+package io.github.yanestyl.jgram.annotation.fsm;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -7,10 +7,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Handles incoming photo messages.
+ * After handler executes - clears user state and session.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface OnPhoto {
+public @interface ExitState {
 }

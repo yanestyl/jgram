@@ -1,4 +1,6 @@
-package io.github.yanestyl.jgram.annotation;
+package io.github.yanestyl.jgram.annotation.filter;
+
+import io.github.yanestyl.jgram.filter.Filter;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -9,16 +11,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ChatType {
-
-    Type value();
+public @interface UseFilter {
 
     /**
-     * Message to send if filter fails. Empty = ignore silently.
+     * Filter class to instantiate and apply.
      */
-    String fallback() default "";
-
-    enum Type {
-        PRIVATE, GROUP, SUPERGROUP, CHANNEL
-    }
+    Class<? extends Filter> value();
 }

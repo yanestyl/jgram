@@ -1,9 +1,9 @@
 package io.github.yanestyl.example.keyboard;
 
 import io.github.yanestyl.jgram.annotation.BotController;
-import io.github.yanestyl.jgram.annotation.OnCallbackQuery;
-import io.github.yanestyl.jgram.annotation.OnCommand;
-import io.github.yanestyl.jgram.annotation.OnMessage;
+import io.github.yanestyl.jgram.annotation.handler.OnCallbackQuery;
+import io.github.yanestyl.jgram.annotation.handler.OnCommand;
+import io.github.yanestyl.jgram.annotation.handler.OnMessage;
 import io.github.yanestyl.jgram.context.CallbackContext;
 import io.github.yanestyl.jgram.context.MessageContext;
 import io.github.yanestyl.jgram.response.BotResponse;

@@ -1,6 +1,6 @@
 package io.github.yanestyl.jgram.core;
 
-import io.github.yanestyl.jgram.annotation.*;
+import io.github.yanestyl.jgram.annotation.handler.*;
 import io.github.yanestyl.jgram.handler.HandlerMethod;
 
 import java.lang.reflect.Method;

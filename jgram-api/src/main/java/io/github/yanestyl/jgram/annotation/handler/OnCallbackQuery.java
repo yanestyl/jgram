@@ -1,6 +1,4 @@
-package io.github.yanestyl.jgram.annotation;
-
-import io.github.yanestyl.jgram.filter.Filter;
+package io.github.yanestyl.jgram.annotation.handler;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -8,13 +6,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Handles inline keyboard button presses.
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface UseFilter {
+public @interface OnCallbackQuery {
 
     /**
-     * Filter class to instantiate and apply.
+     * Callback data to match. Empty = any callback.
      */
-    Class<? extends Filter> value();
+    String value() default "";
 }

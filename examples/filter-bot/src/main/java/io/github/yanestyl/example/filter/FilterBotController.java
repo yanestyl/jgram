@@ -2,9 +2,12 @@ package io.github.yanestyl.example.filter;
 
 import io.github.yanestyl.example.filter.filter.PremiumFilter;
 import io.github.yanestyl.jgram.annotation.*;
-import io.github.yanestyl.jgram.context.LocationContext;
+import io.github.yanestyl.jgram.annotation.filter.ChatType;
+import io.github.yanestyl.jgram.annotation.filter.OnlyMention;
+import io.github.yanestyl.jgram.annotation.filter.UseFilter;
+import io.github.yanestyl.jgram.annotation.handler.OnCommand;
+import io.github.yanestyl.jgram.annotation.handler.OnMessage;
 import io.github.yanestyl.jgram.context.MessageContext;
-import io.github.yanestyl.jgram.context.PhotoContext;
 
 @BotController
 public class FilterBotController {

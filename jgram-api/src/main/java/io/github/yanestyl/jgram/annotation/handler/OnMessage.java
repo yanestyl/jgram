@@ -1,4 +1,4 @@
-package io.github.yanestyl.jgram.annotation;
+package io.github.yanestyl.jgram.annotation.handler;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

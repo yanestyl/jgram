@@ -1,8 +1,8 @@
 package io.github.yanestyl.jgram.handler;
 
-import io.github.yanestyl.jgram.annotation.ChatType;
-import io.github.yanestyl.jgram.annotation.OnlyMention;
-import io.github.yanestyl.jgram.annotation.UseFilter;
+import io.github.yanestyl.jgram.annotation.filter.ChatType;
+import io.github.yanestyl.jgram.annotation.filter.OnlyMention;
+import io.github.yanestyl.jgram.annotation.filter.UseFilter;
 import io.github.yanestyl.jgram.filter.Filter;
 import io.github.yanestyl.jgram.model.UpdateContext;
 import org.slf4j.Logger;
