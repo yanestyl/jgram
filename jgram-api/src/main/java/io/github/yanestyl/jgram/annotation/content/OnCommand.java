@@ -7,7 +7,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Handles a specific bot command (e.g. "/start", "/help").
+ * Handles one or more bot commands.
+ * <p>
+ * Single command:
+ * <pre>
+ * {@literal @}OnCommand("/start")
+ * public String start() { }
+ * </pre>
+ * <p>
+ * Multiple commands:
+ * <pre>
+ * {@literal @}OnCommand({"/help", "/h", "/?"})
+ * public String help() { }
+ * </pre>
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -15,7 +27,7 @@ import java.lang.annotation.Target;
 public @interface OnCommand {
 
     /**
-     * The command to handle, including slash. Example: "/start"
+     * One or more commands to handle, including slash.
      */
-    String value();
+    String[] value();
 }
