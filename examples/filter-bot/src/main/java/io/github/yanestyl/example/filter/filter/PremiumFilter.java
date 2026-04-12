@@ -1,7 +1,7 @@
 package io.github.yanestyl.example.filter.filter;
 
-import com.pengrad.telegrambot.model.Update;
 import io.github.yanestyl.jgram.filter.Filter;
+import io.github.yanestyl.jgram.model.UpdateContext;
 
 import java.util.Set;
 
@@ -16,10 +16,8 @@ public class PremiumFilter implements Filter {
     );
 
     @Override
-    public boolean test(Update update) {
-        if (update.message() == null) return false;
-        long userId = update.message().from().id();
-        return PREMIUM_USERS.contains(userId);
+    public boolean test(UpdateContext ctx) {
+        return PREMIUM_USERS.contains(ctx.userId());
     }
 
     @Override

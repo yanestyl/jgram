@@ -10,8 +10,8 @@
         <version>0.4.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>context-bot</artifactId>
-    <name>JGram Example - Context Bot</name>
+    <artifactId>keyboard-bot</artifactId>
+    <name>JGram Example - Keyboard Bot</name>
 
     <dependencies>
         <dependency>
@@ -33,7 +33,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.6.3</version>
                 <configuration>
-                    <mainClass>io.github.yanestyl.example.context.ContextBotApp</mainClass>
+                    <mainClass>io.github.yanestyl.example.keyboard.KeyboardBotApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>

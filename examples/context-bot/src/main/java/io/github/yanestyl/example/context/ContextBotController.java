@@ -11,7 +11,7 @@ public class ContextBotController {
     @OnCommand("/start")
     public String start(MessageContext ctx) {
         return "Привет, " + ctx.user().firstName() + "! \uD83D\uDC4B\n" +
-                "Евой chat id: " + ctx.chatId();
+                "Твой chat id: " + ctx.chatId();
     }
 
     @OnCommand("/me")
